@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Rey Buendia | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #020617; 
+            color: #f8fafc; 
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass { 
+            background: rgba(15, 23, 42, 0.8); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255,255,255,0.05); 
+        }
+        .nav-link:hover { 
+            color: #38bdf8; 
+            text-shadow: 0 0 8px #38bdf8; 
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { 
+            background: #1e293b; 
+            border-radius: 10px; 
+        }
+        #mobile-menu.hidden { display: none; }
+    </style>
+</head>
+<body class="selection:bg-sky-500/30">
+
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5 px-6 py-4">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <span class="mono font-bold text-sky-400 text-lg uppercase tracking-tighter">MY PORTFOLIO</span>
+            
+            <div class="hidden md:flex gap-8 text-sm font-medium uppercase tracking-widest text-slate-400">
+                <a href="#home" class="nav-link transition">Home</a>
+                <a href="#about" class="nav-link transition">About</a>
+                <a href="#skills" class="nav-link transition">Skills</a>
+                <a href="#projects" class="nav-link transition">Projects</a>
+                <a href="#certificates" class="nav-link transition">Certificates</a>
+            </div>
+
+            <button id="menu-btn" class="md:hidden text-sky-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden flex flex-col gap-4 pt-4 pb-2 text-center text-sm font-medium uppercase tracking-widest text-slate-400">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#certificates" class="nav-link">Certificates</a>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-20">
+            <div class="mb-6 inline-block px-4 py-1 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-400 text-[10px] md:text-xs font-bold uppercase tracking-widest">
+                Junior Software Developer / Full Stack Web Developer / System Analyst
+            </div>
+            <h1 class="text-5xl md:text-8xl font-black mb-6 tracking-tighter uppercase leading-tight">
+                JOHN REY <br><span class="text-sky-500">BUENDIA</span>
+            </h1>
+            <div class="flex flex-col md:flex-row gap-2 md:gap-4 mono text-xs md:text-sm text-slate-400 mb-10">
+                <span>📞 09202843709</span>
+                <span class="hidden md:block text-slate-700">|</span>
+                <span>📧 buendiajohnrey73@gmail.com</span>
+                <span class="hidden md:block text-slate-700">|</span>
+                <span>📍 Legazpi City, Philippines</span>
+            </div>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#projects" class="bg-white text-black px-8 py-3 rounded-lg font-bold hover:bg-sky-400 transition transform hover:-translate-y-1">View My Work</a>
+                <a href="#about" class="glass px-8 py-3 rounded-lg font-bold hover:bg-slate-800 transition">About Me</a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-24 max-w-5xl mx-auto px-6">
+            <h2 class="mono text-2xl font-bold mb-8 text-sky-400 flex items-center gap-4">
+                <span class="h-px w-12 bg-sky-500/50"></span> 01. ABOUT ME
+            </h2>
+            <div class="glass p-8 rounded-2xl border-l-4 border-sky-500">
+                <div class="text-base md:text-lg leading-relaxed text-slate-300 space-y-4">
+                    <p>
+                        I am a motivated technology professional and a recent graduate of <strong class="text-white">Computer Systems Institute (CSI)</strong>, 
+                        where I earned my degree in <strong class="text-white">B.S. in Information Systems</strong>. I have hands-on experience in 
+                        building web applications using <strong class="text-sky-400">PHP, Javascript</strong> and <strong class="text-sky-400">MySQL</strong>.
+                    </p>
+                    <p>
+                        I completed <strong class="text-white">486 hours of OJT</strong> at the <strong class="text-white">DENR – PENRO Albay</strong>, 
+                        assisting the ICT support staff and gaining exposure to government IT infrastructure and operational workflows.
+                    </p>
+                    <p>
+                        My goal is to create meaningful systems that improve efficiency. I am eager to apply my technical skills in a dynamic environment and continuously learn emerging technologies.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-24 max-w-5xl mx-auto px-6">
+            <h2 class="mono text-2xl font-bold mb-12 text-sky-400 flex items-center gap-4">
+                <span class="h-px w-12 bg-sky-500/50"></span> 02. THE TOOLKIT
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass p-6 rounded-xl hover:border-sky-500/30 transition">
+                    <h3 class="font-bold text-xl mb-4 text-white">Development</h3>
+                    <ul class="text-slate-400 grid grid-cols-2 gap-2 text-sm leading-7">
+                        <li> C#.Net</li>
+                        <li> MySQL</li>
+                        <li> Java</li>
+                        <li> PHP</li>
+                        <li> Python</li>
+                        <li> CSS / Bootstrap</li>
+                        <li> Javascript</li>
+                        <li> Visual Basic</li>
+                    </ul>
+                </div>
+                <div class="glass p-6 rounded-xl hover:border-purple-500/30 transition">
+                    <h3 class="font-bold text-xl mb-4 text-white">Tools & Soft Skills</h3>
+                    <ul class="text-slate-400 flex flex-col gap-2 text-sm leading-7">
+                        <li> Visual Studio 2022 / VS Code / XAMPP</li>
+                        <li> Problem Solving & Teamwork</li>
+                        <li> Communication & Time Management</li>
+                        <li> System Analysis & Design</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-24 max-w-5xl mx-auto px-6">
+            <h2 class="mono text-2xl font-bold mb-12 text-sky-400 flex items-center gap-4">
+                <span class="h-px w-12 bg-sky-500/50"></span> 03. FEATURED PROJECTS
+            </h2>
+            <div class="space-y-16">
+                <div class="group grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="order-2 md:order-1">
+                        <span class="mono text-sky-400 text-xs mb-2 block uppercase">Web Application</span>
+                        <h3 class="text-3xl font-bold mb-4 group-hover:text-sky-400 transition">CAR RENTAL BOOKING SYSTEM</h3>
+                        <p class="text-slate-400 mb-6 bg-slate-900/50 p-6 rounded-xl border border-white/5">
+                            A booking system developed to handle customers bookings, vehicles, and rental transactions. Features real-time data handling and structured database integration.
+                        </p>
+                        <div class="flex flex-wrap gap-4 mono text-[10px] text-slate-500 font-bold uppercase">
+                            <span>PHP</span> <span>CSS</span> <span>Javascript</span> <span>MYSQL</span>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2 h-64 bg-slate-800 rounded-2xl border border-white/10 flex items-center justify-center overflow-hidden">
+                        <span class="text-slate-700 font-black text-6xl group-hover:scale-110 transition duration-500">PHP</span>
+                    </div>
+                </div>
+
+                <div class="group grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="h-64 bg-slate-800 rounded-2xl border border-white/10 flex items-center justify-center overflow-hidden">
+                        <span class="text-slate-700 font-black text-6xl group-hover:scale-110 transition duration-500">UI/UX</span>
+                    </div>
+                    <div>
+                        <span class="mono text-emerald-400 text-xs mb-2 block uppercase">Web Application</span>
+                        <h3 class="text-3xl font-bold mb-4 group-hover:text-emerald-400 transition">ONLINE VOTING SYSTEM</h3>
+                        <p class="text-slate-400 mb-6 bg-slate-900/50 p-6 rounded-xl border border-white/5">
+                            An interactive web-based system allowing users to vote securely. Includes authentication, candidate listing, and automated backend vote counting.
+                        </p>
+                        <div class="flex flex-wrap gap-4 mono text-[10px] text-slate-500 font-bold uppercase">
+                            <span>PHP</span> <span>MYSQL</span> <span>CSS</span> <span>JS</span> <span>BOOTSTRAP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certificates Section -->
+        <section id="certificates" class="py-24 max-w-5xl mx-auto px-6">
+            <h2 class="mono text-2xl font-bold mb-12 text-sky-400 flex items-center gap-4">
+                <span class="h-px w-12 bg-sky-500/50"></span> 04. CERTIFICATES
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass overflow-hidden rounded-xl border border-white/10 hover:border-sky-500/50 transition duration-300">
+                    <div class="h-48 bg-slate-900 flex items-center justify-center overflow-hidden">
+                        <img src="certificates/HTML essentials.png" alt="HTML Essentials" class="w-full h-full object-contain hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6 border-t border-white/5 text-center md:text-left">
+                        <h3 class="font-bold text-lg text-white">HTML ESSENTIALS</h3>
+                        <p class="text-slate-400 text-xs italic uppercase tracking-widest mt-1">DICT REGION V</p>
+                    </div>
+                </div>
+
+                <div class="glass overflow-hidden rounded-xl border border-white/10 hover:border-emerald-500/50 transition duration-300">
+                    <div class="h-48 bg-slate-900 flex items-center justify-center overflow-hidden">
+                        <img src="certificates/Innovation And Design Thinking Process.jfif" alt="Design Thinking" class="w-full h-full object-contain hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6 border-t border-white/5 text-center md:text-left">
+                        <h3 class="font-bold text-lg text-white">DESIGN THINKING PROCESS</h3>
+                        <p class="text-slate-400 text-xs italic uppercase tracking-widest mt-1">Mapua University</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-12 text-center text-slate-600 text-[10px] md:text-xs mono border-t border-white/5">
+        &copy; 2026 JOHN REY BUENDIA // BUILT WITH TAILWIND CSS
+    </footer>
+
+    <script>
+        const btn = document.getElementById('menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
