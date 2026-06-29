@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BodyMass - Premium BMI Analytics & Health Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+        #gauge-needle {
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: bottom center;
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* FAQ Accordion Transition */
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+        .faq-active .faq-content {
+            max-height: 200px; /* Adjust if content is longer */
+            padding-top: 1rem;
+        }
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        .faq-active .faq-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
+
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 font-bold text-xl tracking-tight">
+                <span class="bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">BodyMass</span>
+                <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-normal">v3.0</span>
+            </div>
+            <nav class="flex gap-6 text-sm text-slate-400 font-medium">
+                <a href="#calculator" class="hover:text-white transition">Calculator</a>
+                <a href="#reference" class="hover:text-white transition">Ranges</a>
+                <a href="#faqs" class="hover:text-white transition">FAQs</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-6xl w-full mx-auto px-6 py-12 space-y-24">
+        
+        <section id="calculator" class="grid md:grid-cols-12 gap-12 items-center scroll-mt-20">
+            <div class="md:col-span-6 space-y-6">
+                <div class="space-y-3">
+                    <span class="text-xs font-semibold tracking-widest text-cyan-400 uppercase">Interactive Wellness Index</span>
+                    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                        Calculate your body mass index instantly.
+                    </h1>
+                    <p class="text-slate-400 text-base max-w-md">
+                        Get immediate insights into your physiological profile using responsive metrics and intelligent dynamic visualizations.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/60 border border-slate-700/60 p-6 rounded-2xl shadow-xl space-y-5">
+                    <div class="flex bg-slate-900 p-1 rounded-xl relative">
+                        <button onclick="setUnit('metric')" id="btn-metric" class="w-1/2 text-center py-2 rounded-lg text-sm font-medium z-10 transition-all text-white bg-slate-700 shadow-md">
+                            Metric Units
+                        </button>
+                        <button onclick="setUnit('imperial')" id="btn-imperial" class="w-1/2 text-center py-2 rounded-lg text-sm font-medium z-10 transition-all text-slate-400 hover:text-white">
+                            Imperial Units
+                        </button>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Biological Sex</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="setSex('male')" id="btn-male" class="flex items-center justify-center gap-2 border-2 border-cyan-500 bg-cyan-500/10 text-cyan-400 font-semibold py-2 rounded-xl transition transform active:scale-95">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 14a4 4 0 100-8 4 4 0 000 8zm0 0v6m0 0H7m3 0h3M14 6l4-4m0 0h-4m4 0v4"></path></svg>
+                                Male
+                            </button>
+                            <button onclick="setSex('female')" id="btn-female" class="flex items-center justify-center gap-2 border-2 border-slate-700 text-slate-400 font-semibold py-2 rounded-xl transition transform active:scale-95 hover:border-slate-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 14a4 4 0 100-8 4 4 0 000 8zm0 0v6m0 0h-3m3 0h3"></path></svg>
+                                Female
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label id="height-label" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Height (cm)</label>
+                            <input type="number" id="height" placeholder="e.g., 175" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition">
+                        </div>
+                        <div>
+                            <label id="weight-label" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Weight (kg)</label>
+                            <input type="number" id="weight" placeholder="e.g., 70" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition">
+                        </div>
+                    </div>
+
+                    <button onclick="calculateBMI()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-3 rounded-xl transition transform active:scale-98 shadow-lg shadow-cyan-500/10">
+                        Run Diagnostics
+                    </button>
+                </div>
+            </div>
+
+            <div class="md:col-span-6 flex items-center justify-center min-h-[320px]">
+                <div id="empty-state" class="text-center p-8 border-2 border-dashed border-slate-800 rounded-2xl max-w-sm">
+                    <div class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-slate-300 font-medium mb-1">Awaiting Measurements</h3>
+                    <p class="text-slate-500 text-xs">Fill out your parameters and hit run to map your dynamic gauge score here.</p>
+                </div>
+
+                <div id="result-container" class="hidden w-full bg-slate-800/30 border border-slate-800 p-8 rounded-2xl text-center fade-in max-w-md">
+                    <div class="relative w-56 h-28 mx-auto overflow-hidden mb-6">
+                        <div class="w-56 h-56 rounded-full border-[18px] border-slate-800 absolute top-0 left-0"></div>
+                        <div class="w-56 h-56 rounded-full border-[18px] border-transparent border-t-blue-400 border-r-green-400 border-l-yellow-400 absolute top-0 left-0 opacity-30"></div>
+                        <div id="gauge-needle" class="w-2.5 h-24 bg-gradient-to-t from-cyan-400 to-white absolute bottom-0 left-[110px] rounded-full" style="transform: rotate(-90deg);"></div>
+                    </div>
+
+                    <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Calculated Body Mass Index</p>
+                    <h2 id="bmi-value" class="text-6xl font-black my-2 tracking-tight text-white">--</h2>
+                    <p id="bmi-status" class="text-xl font-bold mb-3">--</p>
+                    <p id="bmi-insight" class="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed border-t border-slate-800/80 pt-3 italic"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="reference" class="scroll-mt-20 space-y-6">
+            <div class="text-center max-w-md mx-auto space-y-2">
+                <h2 class="text-2xl font-bold text-white">Standard BMI Classifications</h2>
+                <p class="text-sm text-slate-400">Here is how medical organizations universally break down BMI values for adults.</p>
+            </div>
+            
+            <div class="max-w-2xl mx-auto overflow-hidden border border-slate-800 rounded-xl bg-slate-900/40 backdrop-blur">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-800/50 text-slate-300 font-semibold border-b border-slate-800">
+                            <th class="p-4">BMI Range</th>
+                            <th class="p-4">Classification</th>
+                            <th class="p-4 text-right">Risk Factor</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 text-slate-400">
+                        <tr class="hover:bg-slate-800/20 transition">
+                            <td class="p-4 font-medium text-yellow-400">Below 18.5</td>
+                            <td class="p-4">Underweight</td>
+                            <td class="p-4 text-right text-xs">Nutritional Risk</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/20 transition bg-slate-800/10">
+                            <td class="p-4 font-medium text-green-400">18.5 – 24.9</td>
+                            <td class="p-4 text-slate-200 font-medium">Normal Weight</td>
+                            <td class="p-4 text-right text-xs text-green-500">Minimal Risk</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/20 transition">
+                            <td class="p-4 font-medium text-orange-400">25.0 – 29.9</td>
+                            <td class="p-4">Overweight</td>
+                            <td class="p-4 text-right text-xs">Low/Moderate Risk</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/20 transition">
+                            <td class="p-4 font-medium text-red-400">30.0 and Above</td>
+                            <td class="p-4">Obese</td>
+                            <td class="p-4 text-right text-xs">Increased Clinical Risk</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="faqs" class="scroll-mt-20 max-w-3xl mx-auto space-y-6">
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl font-bold text-white">Frequently Asked Questions</h2>
+                <p class="text-sm text-slate-400">Clear answers to common questions regarding BMI and body metrics.</p>
+            </div>
+
+            <div class="space-y-3">
+                <div class="border border-slate-800 rounded-xl bg-slate-800/20 px-5 py-4 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold text-white text-sm md:text-base">Is BMI accurate for gym-goers and athletes?</h3>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="faq-content text-slate-400 text-sm leading-relaxed">
+                        Not entirely. BMI looks purely at your weight and height. Because muscle tissue is significantly denser than fat tissue, highly active athletes with substantial muscle mass can sometimes register as "overweight" even with very low body fat percentages.
+                    </div>
+                </div>
+
+                <div class="border border-slate-800 rounded-xl bg-slate-800/20 px-5 py-4 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold text-white text-sm md:text-base">Does biological sex alter the core calculation?</h3>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="faq-content text-slate-400 text-sm leading-relaxed">
+                        No, the mathematical equation remains identical for adult men and women. However, women natively carry a slightly higher absolute body fat percentage required for standard endocrine and biological function compared to men at an identical numerical score.
+                    </div>
+                </div>
+
+                <div class="border border-slate-800 rounded-xl bg-slate-800/20 px-5 py-4 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold text-white text-sm md:text-base">What are the primary limitations of BMI?</h3>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="faq-content text-slate-400 text-sm leading-relaxed">
+                        BMI serves as a rapid general population health screen, but it fails to evaluate fat distribution (like dangerous visceral stomach fat vs subcutaneous tissue) or account for genetic differences in bone density or natural age-based metabolic shifts.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-6 text-xs text-slate-600 border-t border-slate-900 bg-slate-950">
+        &copy; 2026 BodyMass Engine. All rights reserved. Designed for educational parameters.<br>
+        Programmed and Developed by <strong class="text-cyan-400">JOHN REY BUENDIA</strong>
+    </footer>
+
+    <script>
+        let currentUnit = 'metric';
+        let currentSex = 'male';
+
+        // Interactive Accordion Controller
+        function toggleFaq(element) {
+            element.classList.toggle('faq-active');
+        }
+
+        function setUnit(unit) {
+            currentUnit = unit;
+            const btnMetric = document.getElementById('btn-metric');
+            const btnImperial = document.getElementById('btn-imperial');
+            const heightLabel = document.getElementById('height-label');
+            const weightLabel = document.getElementById('weight-label');
+            const heightInput = document.getElementById('height');
+            const weightInput = document.getElementById('weight');
+
+            heightInput.value = '';
+            weightInput.value = '';
+
+            if (unit === 'metric') {
+                btnMetric.className = "w-1/2 text-center py-2 rounded-lg text-sm font-medium z-10 transition-all text-white bg-slate-700 shadow-md";
+                btnImperial.className = "w-1/2 text-center py-2 rounded-lg text-sm font-medium z-10 transition-all text-slate-400 hover:text-white";
+                heightLabel.innerText = "Height (cm)";
+                weightLabel.innerText = "Weight (kg)";
+                heightInput.placeholder = "e.g., 175";
+                weightInput.placeholder = "e.g., 70";
+            } else {
+                btnMetric.className = "w-1/2 text-center py-2 rounded-lg text-sm font-medium z-10 transition-all text-slate-400 hover:text-white";
+                btnImperial.className = "w-1/2 text-center py-2 rounded-lg text-sm font-medium z-10 transition-all text-white bg-slate-700 shadow-md";
+                heightLabel.innerText = "Height (inches)";
+                weightLabel.innerText = "Weight (pounds)";
+                heightInput.placeholder = "e.g., 69";
+                weightInput.placeholder = "e.g., 150";
+            }
+        }
+
+        function setSex(sex) {
+            currentSex = sex;
+            const btnMale = document.getElementById('btn-male');
+            const btnFemale = document.getElementById('btn-female');
+
+            if (sex === 'male') {
+                btnMale.className = "flex items-center justify-center gap-2 border-2 border-cyan-500 bg-cyan-500/10 text-cyan-400 font-semibold py-2 rounded-xl transition transform active:scale-95";
+                btnFemale.className = "flex items-center justify-center gap-2 border-2 border-slate-700 text-slate-400 font-semibold py-2 rounded-xl transition transform active:scale-95 hover:border-slate-600";
+            } else {
+                btnMale.className = "flex items-center justify-center gap-2 border-2 border-slate-700 text-slate-400 font-semibold py-2 rounded-xl transition transform active:scale-95 hover:border-slate-600";
+                btnFemale.className = "flex items-center justify-center gap-2 border-2 border-pink-500 bg-pink-500/10 text-pink-400 font-semibold py-2 rounded-xl transition transform active:scale-95";
+            }
+        }
+
+        function triggerConfetti() {
+            const duration = 1.5 * 1000;
+            const end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.8 } });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.8 } });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+
+        function calculateBMI() {
+            const heightVal = parseFloat(document.getElementById('height').value);
+            const weightVal = parseFloat(document.getElementById('weight').value);
+            
+            if (!heightVal || !weightVal || heightVal <= 0 || weightVal <= 0) {
+                alert('Please enter valid numerical height and weight inputs.');
+                return;
+            }
+
+            let bmi = currentUnit === 'metric' 
+                ? (weightVal / ((heightVal / 100) * (heightVal / 100)))
+                : (weightVal / (heightVal * heightVal)) * 703;
+
+            bmi = parseFloat(bmi.toFixed(1));
+            
+            document.getElementById('empty-state').classList.add('hidden');
+            const resultContainer = document.getElementById('result-container');
+            resultContainer.classList.remove('hidden', 'fade-in');
+            void resultContainer.offsetWidth; 
+            resultContainer.classList.add('fade-in');
+
+            document.getElementById('bmi-value').innerText = bmi;
+            
+            let status = "";
+            let colorClass = "";
+            let angle = -90;
+            let insight = "";
+
+            if (bmi < 18.5) {
+                status = "Underweight";
+                colorClass = "text-yellow-400";
+                angle = -90 + ((bmi - 15) / 3.5) * 45;
+                if (angle < -90) angle = -90;
+            } else if (bmi >= 18.5 && bmi < 25) {
+                status = "Normal Weight";
+                colorClass = "text-green-400";
+                angle = -45 + ((bmi - 18.5) / 6.5) * 45;
+                triggerConfetti();
+            } else if (bmi >= 25 && bmi < 30) {
+                status = "Overweight";
+                colorClass = "text-orange-400";
+                angle = 0 + ((bmi - 25) / 5) * 45;
+            } else {
+                status = "Obese";
+                colorClass = "text-red-400";
+                angle = 45 + ((bmi - 30) / 10) * 45;
+                if (angle > 90) angle = 90;
+            }
+
+            if (currentSex === 'male') {
+                insight = "Note: Men typically hold higher dense skeletal muscle content, which occasionally impacts score distribution metrics.";
+            } else {
+                insight = "Note: Women biological profiles natively maintain a slightly higher essential body fat balance required for overall metabolic regulation.";
+            }
+
+            const statusLabel = document.getElementById('bmi-status');
+            statusLabel.innerText = status;
+            statusLabel.className = `text-xl font-bold ${colorClass}`;
+            
+            document.getElementById('bmi-insight').innerText = insight;
+            document.getElementById('gauge-needle').style.transform = `rotate(${angle}deg)`;
+        }
+    </script>
+</body>
+</html>
