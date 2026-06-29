@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-zinc-950 via-slate-900 to-zinc-950 text-slate-200 min-h-screen flex items-center justify-center p-6 antialiased">
+
+    <div class="w-full max-w-xl bg-zinc-900/70 backdrop-blur-xl p-8 rounded-2xl border border-zinc-800/80 shadow-2xl shadow-black/40 transition-all duration-300">
+        
+        <div class="flex justify-between items-start mb-8">
+            <div>
+                <h2 class="text-xl font-semibold tracking-tight text-white mb-1">Asset Ledger</h2>
+                <p class="text-xs text-zinc-400">Monitor cash flow metrics and net liquidity in real-time.</p>
+            </div>
+            <span class="text-[10px] bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full font-medium tracking-wide text-zinc-400 uppercase">Live Session</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-zinc-900 border border-zinc-800/60 p-4 rounded-xl transition-all duration-200 hover:border-zinc-700/50">
+                <span class="block text-[11px] font-medium text-zinc-400 uppercase tracking-wider mb-1">Total Revenue</span>
+                <span id="totalIncome" class="text-lg font-semibold text-emerald-400 tracking-tight">₱0.00</span>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800/60 p-4 rounded-xl transition-all duration-200 hover:border-zinc-700/50">
+                <span class="block text-[11px] font-medium text-zinc-400 uppercase tracking-wider mb-1">Expenditures</span>
+                <span id="totalExpenses" class="text-lg font-semibold text-zinc-300 tracking-tight">₱0.00</span>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800/60 p-4 rounded-xl transition-all duration-200 hover:border-zinc-700/50">
+                <span class="block text-[11px] font-medium text-zinc-400 uppercase tracking-wider mb-1">Net Balance</span>
+                <span id="netBalance" class="text-lg font-semibold text-zinc-400 tracking-tight">₱0.00</span>
+            </div>
+        </div>
+
+        <form id="budgetForm" class="space-y-4 mb-8">
+            <div class="grid grid-cols-3 gap-3">
+                <div class="col-span-2">
+                    <label class="block text-[11px] text-zinc-400 mb-1.5 font-medium">Description</label>
+                    <input type="text" id="description" placeholder="e.g., Consulting Fees, Cloud Servers" 
+                           class="w-full text-sm bg-zinc-950/80 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition duration-200" required>
+                </div>
+                <div>
+                    <label class="block text-[11px] text-zinc-400 mb-1.5 font-medium">Amount (₱)</label>
+                    <input type="number" id="amount" placeholder="0.00" step="0.01" min="0.01"
+                           class="w-full text-sm bg-zinc-950/80 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition duration-200" required>
+                </div>
+            </div>
+            <div class="flex gap-3 pt-1">
+                <div class="w-1/3">
+                    <select id="type" class="w-full text-sm bg-zinc-950/80 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-zinc-300 focus:outline-none focus:border-zinc-600 transition duration-200 cursor-pointer appearance-none">
+                        <option value="income">Credit (+)</option>
+                        <option value="expense">Debit (-)</option>
+                    </select>
+                </div>
+                <button type="submit" class="flex-1 bg-white hover:bg-zinc-200 active:scale-[0.99] text-zinc-950 font-medium text-sm py-2.5 rounded-xl transition duration-200 ease-out shadow-sm">
+                    Post Transaction
+                </button>
+            </div>
+        </form>
+
+        <div class="border-t border-zinc-800/80 pt-6">
+            <h3 class="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-4">Historical Activity Log</h3>
+            <div id="transactionList" class="space-y-2.5 max-h-56 overflow-y-auto pr-1 text-sm custom-scrollbar">
+                <div id="emptyState" class="text-xs text-zinc-500 italic text-center py-8 bg-zinc-900/30 rounded-xl border border-dashed border-zinc-800">
+                    No records found in current ledger index.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const budgetForm = document.getElementById('budgetForm');
+        const transactionList = document.getElementById('transactionList');
+        const emptyState = document.getElementById('emptyState');
+
+        let transactions = [];
+
+        function updateDOM() {
+            transactionList.innerHTML = '';
+            
+            if(transactions.length === 0) {
+                transactionList.appendChild(emptyState);
+            }
+
+            let incomeSum = 0;
+            let expenseSum = 0;
+
+            transactions.forEach((t, index) => {
+                if (t.type === 'income') incomeSum += t.amount;
+                if (t.type === 'expense') expenseSum += t.amount;
+
+                const item = document.createElement('div');
+                item.className = "animate-fade-in flex justify-between items-center bg-zinc-900/40 border border-zinc-800/60 pl-4 pr-3 py-3 rounded-xl transition hover:bg-zinc-900/80 group";
+                
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-1.5 h-1.5 rounded-full ${t.type === 'income' ? 'bg-emerald-500' : 'bg-zinc-500'}"></div>
+                        <span class="font-normal text-zinc-300 tracking-wide">${t.description}</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="${t.type === 'income' ? 'text-emerald-400' : 'text-zinc-400'} font-medium font-mono">
+                            ${t.type === 'income' ? '+' : '-'}₱${t.amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                        </span>
+                        <button onclick="deleteTransaction(${index})" class="text-zinc-600 hover:text-rose-400 transition-colors duration-150 p-1 opacity-60 group-hover:opacity-100" aria-label="Delete entry">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                transactionList.appendChild(item);
+            });
+
+            const net = incomeSum - expenseSum;
+
+            document.getElementById('totalIncome').textContent = `₱${incomeSum.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('totalExpenses').textContent = `₱${expenseSum.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            const balanceEl = document.getElementById('netBalance');
+            balanceEl.textContent = `${net < 0 ? '-' : ''}₱${Math.abs(net).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            // Context sensitive balance colors
+            if (net > 0) {
+                balanceEl.className = 'text-lg font-semibold text-emerald-400 tracking-tight transition duration-300';
+            } else if (net < 0) {
+                balanceEl.className = 'text-lg font-semibold text-rose-400 tracking-tight transition duration-300';
+            } else {
+                balanceEl.className = 'text-lg font-semibold text-zinc-400 tracking-tight transition duration-300';
+            }
+        }
+
+        budgetForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const trans = {
+                description: document.getElementById('description').value,
+                amount: parseFloat(document.getElementById('amount').value),
+                type: document.getElementById('type').value
+            };
+
+            transactions.unshift(trans); // Pushes new transactions to top for cleaner view experience
+            budgetForm.reset();
+            updateDOM();
+        });
+
+        window.deleteTransaction = function(index) {
+            transactions.splice(index, 1);
+            updateDOM();
+        }
+    </script>
+</body>
+</html>
